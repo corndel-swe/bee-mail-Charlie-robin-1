@@ -1,0 +1,49 @@
+@startuml
+
+interface DeviceMediator {
++ addDevice(device: Device)
++ addDevice(devices: List<Device>)
++ detect(device: Device)
+}
+
+abstract class Device {
+# name: String
+# location: String
+# mediator: DeviceMediator
++ getLocation(): String
++ setMediator(mediator: DeviceMediator)
++ {abstract} action()
+# log(message: String)
+}
+
+class SmartCamera extends Device{
+- isRecording: boolean
++ SmartCamera(name: String, location: String)
++ detectMotion()
++ action()
+- startRecording()
+- stopRecording()
+}
+
+class SmartLight extends Device {
+- isOn: boolean
++ SmartLight(name: String, location: String)
++ turnOn()
++ turnOff()
++ action()
+}
+
+class App implements DeviceMediator {
+- devices: List<Device>
+- App()
++ {static} getInstance(): App
++ addDevice(device: Device)
++ detect(triggeringDevice: Device)
+}
+
+Device  --> DeviceMediator
+
+App -> Device
+
+@enduml
+
