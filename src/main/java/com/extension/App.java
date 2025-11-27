@@ -1,17 +1,17 @@
-package com.beemail;
+package com.extension;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class App implements MessageMediator {
 
     private static App instance;
     private final List<User> users;
     private final User ADMIN = new User("0", "ADMIN");
+    private final Map<String, List<User>> groups;
 
     private App() {
         this.users = new ArrayList<>();
+        this.groups = new HashMap<>();
     }
 
     public static App getInstance() {
@@ -30,25 +30,35 @@ public class App implements MessageMediator {
         users.add(user);
     }
 
+    public void addUser(String groupId, User user) {
+        groups.computeIfAbsent(groupId, k -> new ArrayList<>()).add(user);
+    }
+
     @Override
     public void deliverMessage(String senderId, String recipientId, String content) {
         Optional<User> sender = findUser(senderId);
         Optional<User> recipient = findUser(recipientId);
+        List<User> group = groups.getOrDefault(recipientId, List.of());
 
         if (sender.isEmpty()) {
             System.out.println("Cannot find sender :S");
             return;
         }
 
-        if (recipient.isEmpty()) {
+        if (group.isEmpty() && recipient.isEmpty()) {
             Message unableToFindRecipient = new Message(ADMIN, sender.get(), "Failed message to :" + recipientId);
             sender.get().receiveMessage(unableToFindRecipient);
             return;
         }
 
-        Message message = new Message(sender.get(), recipient.get(), content);
-        recipient.get().receiveMessage(message);
+        if (!group.isEmpty()) {
+            group.forEach(user -> {
+                Message message = new Message(sender.get(), user, content);
+                user.receiveMessage(message);
+            });
+        } else {
+            Message message = new Message(sender.get(), recipient.get(), content);
+            recipient.get().receiveMessage(message);
+        }
     }
-
-
 }

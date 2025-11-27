@@ -1,4 +1,4 @@
-package com.beemail;
+package com.extension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,7 @@ public class User {
     private final String id;
     private final String userName;
     private final List<Message> inbox = new ArrayList<>();
+    private final List<Message> sent = new ArrayList<>();
     private MessageMediator messageMediator;
 
     public User(String id, String userName) {

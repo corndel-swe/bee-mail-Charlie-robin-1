@@ -1,4 +1,4 @@
-package com.beemail;
+package com.extension;
 
 public class Main {
 
@@ -15,18 +15,14 @@ public class Main {
         peter.addUser(app);
         simon.addUser(app);
 
-        // USER1 MESSAGE USER2
-        charlie.sendMessage("456", "Hello");
-        peter.readMessage(0);
+        app.addUser("group-1", charlie);
+        app.addUser("group-1", peter);
+        app.addUser("group-1", simon);
 
-        // USER2 MESSAGE USER1
-        peter.sendMessage("123", "Hey");
+        simon.sendMessage("group-1", "Whaaaaattttssss uuuuppppp!!!!");
+
         charlie.readMessage(0);
-
-        // USER3 EDGE CASES
+        peter.readMessage(0);
         simon.readMessage(0);
-        simon.sendMessage("101112", "Howdy");
-        simon.readMessage(0);
-        simon.readMessage(2);
     }
 }
